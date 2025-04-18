@@ -90,7 +90,7 @@ platformdirs==4.3.6
 preshed==3.0.9
 prompt_toolkit==3.0.50
 propcache==0.3.0
-protobuf==5.29.3
+protobuf>=3.19.6,<4.24
 psutil==7.0.0
 pure_eval==0.2.3
 pyarrow==19.0.1

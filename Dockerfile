@@ -17,5 +17,5 @@ COPY medical/ /app/
 # Expose le port 8000
 EXPOSE 8000
 
-# Démarre le serveur Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Démarre le serveur Django avec gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "medical.wsgi:application"]
