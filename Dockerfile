@@ -23,8 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copie le code du backend dans le conteneur
-COPY medical/ /app/
-COPY manage.py /app/
+COPY . /app/
 
 # Change les permissions
 RUN chown -R appuser:appuser /app
