@@ -1,7 +1,18 @@
 # Utilise l'image officielle de Python
 FROM python:3.10-slim
 
-# Défini le répertoire de travail
+# Définit les variables d'environnement
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=medical.settings \
+    DJANGO_DEBUG=False
+
+# Crée un utilisateur non-root
+RUN useradd -m appuser && \
+    mkdir /app && \
+    chown appuser:appuser /app
+
+# Définit le répertoire de travail
 WORKDIR /app
 
 # Copie les fichiers de dépendances
@@ -13,9 +24,16 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copie le code du backend dans le conteneur
 COPY medical/ /app/
+COPY manage.py /app/
+
+# Change les permissions
+RUN chown -R appuser:appuser /app
+
+# Change vers l'utilisateur non-root
+USER appuser
 
 # Expose le port 8000
 EXPOSE 8000
 
 # Démarre le serveur Django avec gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "medical.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "medical.wsgi:application"]
