@@ -150,6 +150,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 "https://medical-app-fbf5e.web.app",
     "https://medical-app-fbf5e.firebaseapp.com",
+"https://your-custom-domain.com",
 ]
 
 # Security settings
