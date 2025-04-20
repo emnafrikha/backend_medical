@@ -13,7 +13,8 @@ from .serializers import ClientSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
-
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 
 from django.http import JsonResponse
@@ -27,6 +28,7 @@ from .serializers import DisponibiliteSerializer, DocteurSerializer, ClientSeria
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_doctor(request):
     serializer = DocteurSerializer(data=request.data)
     if serializer.is_valid():
@@ -35,6 +37,7 @@ def register_doctor(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_client(request):
     serializer = ClientSerializer(data=request.data)
     if serializer.is_valid():
@@ -44,12 +47,14 @@ def register_client(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_doctors(request):
     doctors = Docteur.objects.all()
     serializer = DocteurSerializer(doctors, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
  
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_client(request):
     clients = Client.objects.all()
     serializer = ClientSerializer(clients, many=True)
@@ -114,6 +119,7 @@ def login_client(request):
     
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def search_doctors(request):
     search_term = request.query_params.get('search', '')
 
@@ -131,6 +137,7 @@ def search_doctors(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def search_doctors1(request):
     
     city = request.query_params.get('city', '')
@@ -146,6 +153,7 @@ def search_doctors1(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def ajout_disponibilites(request):
     try:
         docteur_id = request.data.get("docteur")
@@ -173,6 +181,7 @@ def ajout_disponibilites(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_disponibilites(request, id):
     try:
         disponibilite = Disponibilite.objects.get(docteur_id=id)
@@ -183,6 +192,7 @@ def get_disponibilites(request, id):
 
 
 @api_view(['GET', 'PUT'])
+@permission_classes([AllowAny])
 def get_update_disponibilites(request, doctor_id):
     try:
         disponibilite = Disponibilite.objects.get(docteur_id=doctor_id)
@@ -202,6 +212,7 @@ def get_update_disponibilites(request, doctor_id):
     
     
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_rendezvous(request):
     docteur_id = request.GET.get('docteur_id')
     patient_id = request.GET.get('patient_id')
@@ -218,6 +229,7 @@ def get_rendezvous(request):
     return Response({'rendezvous': serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def add_rendezvous(request):
     if request.method == 'POST':
         serializer = RendezVousSerializer(data=request.data)
@@ -232,6 +244,7 @@ def add_rendezvous(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_doctor_by_id(request, id):
     print(f"🔍 Requête API reçue pour le médecin ID: {id}")
 
@@ -245,6 +258,7 @@ def get_doctor_by_id(request, id):
     
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_rendezvous_medecin(request, doctor_id):
     try:
         rendezvous = RendezVous.objects.filter(docteur_id=doctor_id)
@@ -267,6 +281,7 @@ def get_rendezvous_medecin(request, doctor_id):
 
     
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_client_by_id(request, id):
     try:
         client = Client.objects.get(id=id)
@@ -278,6 +293,7 @@ def get_client_by_id(request, id):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def rendezvous_client(request, client_id):
     rendezvous = RendezVous.objects.filter(client_id=client_id).select_related('docteur')
     serializer = RendezVousSerializer(rendezvous, many=True)
@@ -285,6 +301,7 @@ def rendezvous_client(request, client_id):
 
 
 @api_view(['DELETE'])
+@permission_classes([AllowAny])
 def supprimer_rendezvous(request, pk):
     try:
         rendezvous = RendezVous.objects.get(pk=pk)
@@ -296,6 +313,7 @@ def supprimer_rendezvous(request, pk):
 
 # views.py
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def create_notification(request):
     try:
         # Convertir appointment_data si envoyé en tant que string JSON
@@ -334,6 +352,7 @@ def create_notification(request):
 # views.py
 # views.py
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def doctor_notifications(request, doctor_id):
     print(f"Doctor ID reçu : {doctor_id}")  # Debugging
     notifications = Notification.objects.filter(doctor_id=doctor_id).order_by('-created_at')
@@ -357,11 +376,13 @@ def doctor_notifications(request, doctor_id):
     return Response(data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def unread_notifications_count(request, doctor_id):
     count = Notification.objects.filter(doctor_id=doctor_id, is_read=False).count()
     return Response({'count': count})
 
 @api_view(['PATCH'])
+@permission_classes([AllowAny])
 def mark_as_read(request, notification_id):
     try:
         notification = get_object_or_404(Notification, pk=notification_id)
