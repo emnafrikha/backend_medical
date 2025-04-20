@@ -6,7 +6,7 @@ from .views import register_client
 from .views import search_doctors
 from .views import search_doctors1
 from .views import get_rendezvous_medecin
-
+from rest_framework.authtoken.views import obtain_auth_token
 from .views import  add_rendezvous, ajout_disponibilites, get_rendezvous, register_doctor
 from .views import login_doctor, login_client,supprimer_rendezvous,doctor_notifications,unread_notifications_count,mark_as_read
 from .views import get_doctors, get_client ,get_client_by_id,create_notification
@@ -34,6 +34,7 @@ urlpatterns = [
 	path('doctors/<int:doctor_id>/notifications/', doctor_notifications, name='doctor_notifications'),
      path('doctors/<int:doctor_id>/notifications/unread-count/', unread_notifications_count, name='unread-notifications-count'),
      path('notifications/<int:notification_id>/mark-as-read/', mark_as_read,  name='mark-notification-read'),
+path('token/', obtain_auth_token, name='api_token_auth'),
 ]
 
 
